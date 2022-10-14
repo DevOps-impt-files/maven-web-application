@@ -1,6 +1,6 @@
 node {
 
-
+try{
         echo "the job name is: ${env.job_name}"
        echo "the node name is: ${env.node_name}"
        echo "the build number is: {env.build_number}"
@@ -29,7 +29,14 @@ node {
           }
         }
           
-        
+        }//try closing
+        catch (e){
+        currentbuild.result="FAILURE"
+        throw e
+        }//catch closing 
+        finally{
+        slacknotifications(currentbuild.result)
+     }
      }
       
     //Code Snippet for sending slack notifications.
