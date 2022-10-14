@@ -33,6 +33,7 @@ try{
         }
         
          }//try closing
+          }//try closing
   catch(e){
   currentBuild.result="FAILURE"
   throw e
@@ -40,6 +41,7 @@ try{
   finally{
   slackNotifications(currentBuild.result)
   }
+  
 } //Node closing
 
 //Code Snippet for sending slack notifications.
