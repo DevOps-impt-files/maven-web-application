@@ -33,7 +33,7 @@ try{
         }
         
          }//try closing
-          }//try closing
+          
   catch(e){
   currentBuild.result="FAILURE"
   throw e
