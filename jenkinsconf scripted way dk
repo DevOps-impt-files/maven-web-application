@@ -1,39 +1,42 @@
-node('walmartnode'){
+ node{
 
 try{
 
-     slackNotifications('STARTED')
-     def mavenHome = tool name: 'maven3.8.6'
-      
-      echo "the job name is: ${env.job_name}"
-       echo "the node name is: ${env.node_name}"
-       echo "the build number is: {env.build_number}"
-   
-        stage('CheckOutCode'){
-         git branch: 'development', credentialsId: '75fb4e82-e9a7-4868-9a41-5de65afd80a7', url: 'https://github.com/DevOps-impt-files/maven-web-application.git'
+  slackNotifications('STARTED')
+ def mavenHome = tool name: 'maven3.8.6'
+ 
+ echo "The JobName is: ${env.JOB_NAME}" 
+ echo "The node name is: ${env.NODE_NAME}"
+ echo "The build number is: ${env.BUILD_NUMBER}"
+ 
+  
+
+  stage('CheckOutCode'){
+  git branch: 'development', credentialsId: '75fb4e82-e9a7-4868-9a41-5de65afd80a7', url: 'https://github.com/DevOps-impt-files/maven-web-application.git'
         }
-           
-    
-        stage('Build'){
-        sh "${mavenHome}/bin/mvn clean package"
-        }
-          
-        stage('executesonarqubereport'){
-         sh "${mavenHome}/bin/mvn clean sonar:sonar"
-         }
-         
-         stage('uploadartifactstonexus'){
-         sh "${mavenHome}/bin/mvn clean package sonar:sonar deploy"
-         }
-         
-         stage('DeployAppIntoTomcatServer'){
-         sshagent(['d13ba8a8-7eac-4c76-a6fb-724a32b940f2']){
+  
+  stage('Build'){
+  sh "${mavenHome}/bin/mvn package"
+  }
+  
+  /*
+  stage('ExecuteSoanrQubeReport')
+  {
+  sh "${mavenHome}/bin/mvn clean sonar:sonar"
+  }
+  
+  stage('UploadArtifactsIntoNexus')
+  {
+  sh "${mavenHome}/bin/mvn clean deploy"
+  }
+  
+   stage('DeployAppIntoTomcatServer'){
+   sshagent(['d13ba8a8-7eac-4c76-a6fb-724a32b940f2']){
          sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.43.65:/opt/apache-tomcat-9.0.65/webapps/"   
-          }
-        }
-        
-         }//try closing
-          
+  }
+  }
+  */
+  }//try closing
   catch(e){
   currentBuild.result="FAILURE"
   throw e
@@ -41,7 +44,6 @@ try{
   finally{
   slackNotifications(currentBuild.result)
   }
-  
 } //Node closing
 
 //Code Snippet for sending slack notifications.
